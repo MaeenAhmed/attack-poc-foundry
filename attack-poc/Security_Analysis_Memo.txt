@@ -1,0 +1,14 @@
+TO: Stakeholders, Engineering Team
+FROM: MaenAhmed, Security Analyst
+DATE: November 21, 2025
+SUBJECT: Critical Reentrancy Vulnerability in the VulnerableBatchVault Contract
+
+This memorandum details the discovery and analysis of a critical security flaw within the VulnerableBatchVault smart contract. Our investigation has confirmed a reentrancy vulnerability in the batchSwap function that poses an immediate and severe risk to all assets held within the vault.
+
+The core of the issue lies in the operational sequence of the batchSwap function. It processes external fund transfers before updating its own internal accounting ledgers. This oversight allows a malicious actor to repeatedly call the function within a single transaction, effectively bypassing balance checks and enabling unauthorized withdrawals.
+
+To validate this threat, we developed a full Proof of Concept using the Foundry framework. The simulation demonstrated that an attacker, starting with no funds, could successfully manipulate the vault to withdraw double the amount of assets they were legitimately entitled to in a single operation. This test confirms that the vulnerability is not theoretical but practically exploitable.
+
+As a remediation, we implemented and verified a solution by integrating the industry-standard ReentrancyGuard from the OpenZeppelin library. A subsequent test against the secured contract confirmed that the exploit is no longer possible.
+
+It is our urgent recommendation that the engineering team applies this validated patch to all deployed instances of the contract.
